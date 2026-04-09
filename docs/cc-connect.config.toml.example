@@ -1,0 +1,26 @@
+language = "zh"
+
+[log]
+level = "info"
+
+[stream_preview]
+enabled = false
+
+[[projects]]
+name = "my-project"
+quiet = true
+
+[projects.agent]
+type = "codex"
+
+[projects.agent.options]
+work_dir = 'D:\path\to\your\repo'
+mode = "yolo"
+
+[[projects.platforms]]
+type = "feishu"
+
+[projects.platforms.options]
+app_id = "cli_xxxxxxxxxxxxxxxx"
+app_secret = "your_feishu_app_secret"
+progress_style = "compact"
