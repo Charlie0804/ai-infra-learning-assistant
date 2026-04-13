@@ -9,7 +9,7 @@
 
 ## 2. 环境变量
 
-复制仓库根目录下的 `.env.example` 为 `.env`，至少填这些值：
+复制仓库根目录下的 `.env.example` 为 `.env`，至少填写：
 
 - `OPENAI_API_KEY`
 - `FEISHU_APP_ID`
@@ -18,11 +18,9 @@
 - `SGLANG_REPO`
 
 如果你要同步知识库，再补：
-
 - `FEISHU_WIKI_URL`
 
-如果你把笔记放在自定义目录，也可以补：
-
+如果你要把笔记放在自定义目录，也可以补：
 - `SGLANG_NOTES_ROOT`
 - `SGLANG_NOTES_DIR`
 - `SGLANG_LEARNING_STATE_FILE`
@@ -55,19 +53,25 @@ curl http://127.0.0.1:8000/health
 https://你的公网域名/webhook/feishu/events
 ```
 
-## 4. `cc-connect` 模式
+## 4. cc-connect 模式
 
-更适合源码学习型对话。基本步骤：
+如果你更看重移动端源码对话体验，推荐直接用 `cc-connect`：
 
 1. 安装 `cc-connect`
 2. 复制 [cc-connect.config.toml.example](cc-connect.config.toml.example) 到 `~/.cc-connect/config.toml`
-3. 填入你的飞书 `App ID` 和 `App Secret`
+3. 填入飞书 `App ID` 和 `App Secret`
 4. 把 `work_dir` 改成你的目标仓库
 5. 启动 `cc-connect`
 
+如果你的环境依赖代理，建议直接使用：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\cc-connect\restart-with-proxy.ps1
+```
+
 ## 5. 本地命令能力
 
-Webhook 版当前支持这些命令：
+Webhook 版默认支持这些命令：
 
 - `/help`
 - `/task add <内容>`
@@ -77,7 +81,7 @@ Webhook 版当前支持这些命令：
 - `/code <关键词>`
 - `/file <相对路径[:行号]>`
 
-普通自然语言问题也可以直接发，比如：
+普通自然语言问题也可以直接发，例如：
 
 - `Scheduler 主循环是怎么挑新 batch 的`
 - `TokenizerManager.generate_request 的职责边界是什么`
@@ -103,21 +107,19 @@ PowerShell 版本：
 .\app\wiki_sync.ps1 -Command sync-latest -WikiUrl "https://your-domain.feishu.cn/wiki/xxxxx"
 ```
 
-## 7. 推荐目录约定
+## 7. 源码教师模式建议
 
-如果你也想像源码学习助手那样沉淀本地笔记，推荐这样放：
+如果你想把它用成“源码教师”，推荐：
 
-```text
-notes/
-  sglang-learning-state.md
-  scheduler-main-loop.md
-  tokenizer-manager-generate-request.md
-```
+- 主教学方法交给 skill 或模型
+- 用单独的状态文件记录当前主题、已掌握主题和当前误区
+- 让笔记先落本地，再异步同步知识库
+- 不因为“已经生成了一篇笔记”就自动推进到下一主题
 
 ## 8. 适合继续扩展的方向
 
 - 飞书事件加密支持
-- OpenAI 托管会话状态
-- 更强的代码调用链提取
-- 自动摘要和阶段性学习报告
+- 托管会话状态
+- 更强的调用链提取
+- 自动复习题与阶段性学习报告
 - 多仓库切换

@@ -1,14 +1,13 @@
-# 飞书 + cc-connect 配置清单（通用模板）
+# 飞书 + cc-connect 配置清单
 
 ## 1. 适用场景
 
-如果你想直接把本地 Codex CLI 工作区接到飞书，而不是自己跑 webhook 服务，这份模板更适合你。
+如果你想直接把本地 `Codex CLI` 工作区接到飞书，而不是自己额外跑一套 webhook 服务，这份模板更适合你。
 
 典型用途：
-
 - 在手机飞书里继续本地源码学习
 - 用 `/new`、`/switch` 管理不同主题会话
-- 让 Codex 在指定仓库目录里读代码、跑命令、生成笔记
+- 让 Codex 在指定仓库里读代码、跑命令、生成笔记
 
 ## 2. 飞书后台配置顺序
 
@@ -17,25 +16,22 @@
 3. 开启机器人能力
 4. 事件订阅选择长连接
 5. 添加事件 `im.message.receive_v1`
-6. 在权限管理里开通消息相关权限
+6. 在权限管理里开消息相关权限
 7. 创建版本
 8. 发布
 
 ## 3. 最小权限建议
 
 私聊最小集合：
-
 - `contact:user.base:readonly`
 - `im:message.p2p_msg:readonly`
 - `im:message:send_as_bot`
 
 如果你还想在群聊里 `@机器人`：
-
 - `im:message.group_at_msg:readonly`
 - `im:message.group_msg`
 
-如果后面要让机器人辅助知识库同步或文档写入，再额外开：
-
+如果后面要做知识库同步或文档写入，再补：
 - `docx:document`
 - `drive:drive`
 - `wiki:wiki`
@@ -45,32 +41,69 @@
 - `App ID`
 - `App Secret`
 
-把它们填入 `~/.cc-connect/config.toml`。
+把它们填进 `~/.cc-connect/config.toml`。
 
 ## 5. 推荐配置项
 
-[cc-connect.config.toml.example](cc-connect.config.toml.example) 里保留了一份最小模板。
+示例模板见 [cc-connect.config.toml.example](cc-connect.config.toml.example)。
 
-几个关键项的含义：
-
+关键项说明：
 - `work_dir`
-  Codex 实际工作的仓库目录。
+  Codex 实际工作的仓库目录
 - `mode = "yolo"`
-  允许更积极地使用本地工具，适合源码阅读和自动化笔记。
+  更适合源码阅读、命令执行和本地笔记工作流
 - `quiet = true`
-  减少飞书里的过程噪音。
+  减少飞书里的过程噪音
 - `progress_style = "compact"`
-  更适合手机阅读。
+  更适合手机端阅读
 
 ## 6. 启动
 
-Windows 示例：
+Windows 最小启动方式：
 
 ```powershell
 & "$env:APPDATA\npm\cc-connect.cmd" --config "$env:USERPROFILE\.cc-connect\config.toml"
 ```
 
-## 7. 常用会话命令
+## 7. 代理环境建议
+
+如果你的机器访问飞书或 OpenAI 依赖本地代理，建议不要直接手敲 `cc-connect.cmd`，而是使用仓库里的脚本：
+
+- [../scripts/cc-connect/start-with-proxy.ps1](../scripts/cc-connect/start-with-proxy.ps1)
+- [../scripts/cc-connect/restart-with-proxy.ps1](../scripts/cc-connect/restart-with-proxy.ps1)
+
+常用方式：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\cc-connect\restart-with-proxy.ps1
+```
+
+如果要手动指定代理：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\cc-connect\restart-with-proxy.ps1 -ProxyUrl http://127.0.0.1:7890
+```
+
+## 8. 健康检查
+
+推荐把“启动”和“健康检查”分开：
+
+- 检查状态：[../scripts/cc-connect/check-health.ps1](../scripts/cc-connect/check-health.ps1)
+- 不健康时自动修复：[../scripts/cc-connect/repair-if-unhealthy.ps1](../scripts/cc-connect/repair-if-unhealthy.ps1)
+
+检查：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\cc-connect\check-health.ps1
+```
+
+自动修复：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\cc-connect\repair-if-unhealthy.ps1
+```
+
+## 9. 常用会话命令
 
 - `/new <name>`
 - `/list`
@@ -82,7 +115,7 @@ Windows 示例：
 - `/quiet`
 - `/help`
 
-## 8. 推荐起手提示词
+## 10. 推荐起手提示词
 
 ```text
 请作为我的源码学习助手，在当前 work_dir 仓库中工作。
